@@ -3,6 +3,10 @@ const app = express();
 
 const router = express.Router();
 
+const {
+    Task,
+} = require('../models/task')
+
 app.use(express.json());
 
 
@@ -43,9 +47,11 @@ router.put('/api/tasks/edit/:id', (req, res) => {
 })
 
 
-
-
-
-
+    
+    
+    router.get('/api/tasks', async (req, res) => {
+        const task = await Task.find();
+        res.send(task);       
+    })
 
 module.exports = router;
