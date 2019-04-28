@@ -4,7 +4,9 @@ const users = require('./routes/users');
 const auth = require('./routes/auth');
 const tasks = require('./routes/tasks');
 const express = require('express');
+const jwt_decode = require('jwt-decode')
 const app = express();
+
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, HEAD, OPTIONS");
@@ -18,6 +20,11 @@ const {
   User,
   validateUser
 } = require('./models/user');
+
+const {
+  Task,
+  validateTask
+ } = require('./models/task');
 
 // if(!config.get('jwtPrivateKey')) {
 //   console.error('FATAL ERROR: jwtPrivateKey is not defined');
@@ -44,20 +51,21 @@ app.listen(port, () => console.log(`Listening on port ${port}...`));
 // *********************Pobieranie i usuwanie taskow *********************
 
 app.get('/api/tasks', async (req, res) => {
-  const task = await User.find();
+  const decoded = jwt_decode(req.query.token);
+  const task = await Task.find({User:decoded._id});
   res.send(task);      
 })
 
 app.delete('/api/tasks', async (req, res) => { 
   console.log(req.query._id)
-  await User.deleteOne({_id:req.query._id})
+  await Task.deleteOne({_id:req.query._id})
 });
 
 
 // *********category***********
 
 app.get('/api/tasks/category', async (req, res) => {
-  const categoryTasks = await User.find({category:`${req.query.category}`});  
-  console.log(categoryTasks)
+  const decoded = jwt_decode(req.query.token);
+  const categoryTasks = await Task.find({User:decoded._id,category:`${req.query.category}`});  
   res.send(categoryTasks)
 }); 
