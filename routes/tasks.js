@@ -1,63 +1,26 @@
 const express = require('express');
 const app = express();
+
 const router = express.Router();
-const { Task } = require('../models/task');
-const { User } = require('../models/user');
+
+const {
+    Task,
+} = require('../models/task')
 
 app.use(express.json());
 
 
-//get tasks
-
-router.get('/', async(req, res) => {
-    const task = await Task.find();
-    res.send(task);
+router.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, HEAD, OPTIONS");
+    res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
 });
 
-
-// post task
-router.post('/', async(req, res) => {
-    const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
-    const task = new Task {
-        id: _id,
-        name: req.body.name,
-        user: {
-            User.email
-        },
-        category: req.body.category,
-        status: req.body.status
-    };
-
-    const result = await task.save()
-    res.send(result);
-});
-
-//edit task
-router.put('/edit/:id', async(req, res) => {
-
-    const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
-
-    const task = await Task.findByIdAndUpdate(req.params.id, {
-        id: _id,
-        name: req.body.name,
-        user: {
-            User._id
-        },
-        category: req.body.category,
-        status: req.body.status
-    }, { new: true });
-
-    res.send(task);
-
-
-});
 
 // mark tasks as done
-router.put('/status/:id', (req, res) => {
+router.put('/api/tasks/status/:id', (req, res) => {
     const task = taskList.find(t => t.id === parseInt(req.params.id));
     if (!task) {
         res.status(404).send('The task with given ID does not exist');
@@ -75,10 +38,22 @@ router.put('/status/:id', (req, res) => {
 
 
 
-
-router.get('/', async(req, res) => {
-    const task = await Task.find();
+router.post('/api/tasks', (req, res) => {
+    const task = {
+        id: tasks.length + 1,
+        name: req.body.name
+    };
+    tasks.push(task);
     res.send(task);
+});
+
+
+router.put('/api/tasks/edit/:id', (req, res) => {
+
+    task.name = req.body.name;
+    res.send(task)
 })
+
+
 
 module.exports = router;
