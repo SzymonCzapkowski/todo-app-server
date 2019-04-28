@@ -9,11 +9,11 @@ const Task = mongoose.model('Task', new mongoose.Schema({
         maxlength: 255,
         required: true,
     },
-    User: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
+    // User: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'User',
+    //     required: true
+    // },
     category: {
         type: String,
         enum: ['work', 'home', 'personal'],

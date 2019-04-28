@@ -10,13 +10,14 @@ const {
 
 //registration
 router.post('/register', async (req, res) => {
-    const {
-        error
-    } = validateUser(req.body);
-    if (error) {
-        return res.status(400).send(error.details[0].message);
-    }
-
+    // console.log(req);
+    // const {
+    //     error
+    // } = validateUser(req.body);
+    // if (error) {
+    //     return res.status(400).send(error.details[0].message);
+    // }
+console.log(req.body);
     let user = await User.findOne({
         email: req.body.email
     });
@@ -24,6 +25,7 @@ router.post('/register', async (req, res) => {
         return res.status(400).send('That user already exisits!');
     } else {
         user = new User({
+            name: req.body.name,
             email: req.body.email,
             password: req.body.password
         });
