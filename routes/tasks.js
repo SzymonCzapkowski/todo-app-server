@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
 const router = express.Router();
@@ -15,11 +16,10 @@ router.post('/', async(req, res) => {
     const task = new Task( {
         // id: _id,
         name: req.body.name,
-        user: 
-            User.email,
+        User: new mongoose.Types.ObjectId("5cc61dd2579fcc41641ef4b9"),
         // },
         category: req.body.category,
-        status: req.body.status
+        status: false, 
     });
 
     const result = await task.save()
