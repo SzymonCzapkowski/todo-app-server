@@ -24,7 +24,8 @@ const {
 const {
   Task,
   validateTask
- } = require('./models/task');
+
+} = require('./models/task');
 
 // if(!config.get('jwtPrivateKey')) {
 //   console.error('FATAL ERROR: jwtPrivateKey is not defined');
@@ -53,6 +54,7 @@ app.listen(port, () => console.log(`Listening on port ${port}...`));
 app.get('/api/tasks', async (req, res) => {
   const decoded = jwt_decode(req.query.token);
   const task = await Task.find({User:decoded._id});
+
   res.send(task);      
 })
 
@@ -65,7 +67,9 @@ app.delete('/api/tasks', async (req, res) => {
 // *********category***********
 
 app.get('/api/tasks/category', async (req, res) => {
+
   const decoded = jwt_decode(req.query.token);
   const categoryTasks = await Task.find({User:decoded._id,category:`${req.query.category}`});  
+
   res.send(categoryTasks)
 }); 
