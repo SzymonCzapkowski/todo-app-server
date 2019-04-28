@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
-const { User } = require('./models/user');
 
 
 const Task = mongoose.model('Task', new mongoose.Schema({
     name: {
         type: String,
         minlength: 3,
-        maxlength: 255
+        maxlength: 255,
         required: true,
     },
     User: {
@@ -17,7 +16,7 @@ const Task = mongoose.model('Task', new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ['work', 'home', 'personal']
+        enum: ['work', 'home', 'personal'],
         required: true,
     },
     status: {

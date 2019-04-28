@@ -20,15 +20,15 @@ router.post('/', async(req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    const task = new Task {
+    const task = new Task( {
         id: _id,
         name: req.body.name,
-        user: {
-            User.email
-        },
+        user: 
+            User.email,
+        // },
         category: req.body.category,
         status: req.body.status
-    };
+    });
 
     const result = await task.save()
     res.send(result);
@@ -44,9 +44,7 @@ router.put('/edit/:id', async(req, res) => {
     const task = await Task.findByIdAndUpdate(req.params.id, {
         id: _id,
         name: req.body.name,
-        user: {
-            User._id
-        },
+        user: User._id,
         category: req.body.category,
         status: req.body.status
     }, { new: true });
