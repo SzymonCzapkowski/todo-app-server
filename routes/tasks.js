@@ -1,51 +1,88 @@
 const express = require('express');
-
 const app = express();
+const router = express.Router();
+const jwtDecode = require('jwt-decode');
+const {
+    Task,
+    validateTask
+} = require('../models/task');
+
 
 app.use(express.json());
 
-const tasks = [{
-        id: 1,
-        name: 'Create app'
-    },
-    {
-        id: 2,
-        name: 'Make a dinner'
-    },
-    {
-        id: 3,
-        name: 'Watch TV'
-    },
-];
 
-/*
-app.get('/api/tasks', (req, res) => {
-    res.send(tasks);
-});
-*/
 
-app.post('/api/tasks', (req, res) => {
-    const task = {
-        id: tasks.length + 1,
-        name: req.body.name
-    };
-    tasks.push(task);
+
+
+//get tasks
+
+router.get('/', async(req, res) => {
+    const task = await Task.find();
     res.send(task);
 });
 
 
-app.put('/api/tasks/:id', (req, res) => {
-
-    task.name = req.body.name;
-    res.send(task)
-})
 
 
 
+// post task
+router.post('/', async(req, res) => {
+    const {
+        error
+    } = validateTask(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
+    const task = new Task({
+        id: _id,
+        name: req.body.name,
+        user: user,
+        category: req.body.category,
+        status: req.body.status
+    });
 
-
-
-app.listen(3000, () => {
-    console.log('server started on port 3000');
+    const result = await task.save();
+    res.send(result);
 });
+
+//edit task
+router.put('/edit/:id', async(req, res) => {
+
+    const {
+        error
+    } = validateTask(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+
+
+    const task = await Task.findByIdAndUpdate(req.params.id, {
+        id: _id,
+        name: req.body.name,
+        user: user,
+        category: req.body.category,
+        status: req.body.status
+    }, {
+        new: true
+    });
+
+    res.send(task);
+});
+
+// mark tasks as done - Angelika
+router.put('/status/:id', (req, res) => {
+    const task = taskList.find(t => t.id === parseInt(req.params.id));
+    if (!task) {
+        res.status(404).send('The task with given ID does not exist');
+        return;
+    }
+
+    if (req.body.hasOwnProperty('done') === false) {
+        res.status(400).send("Task cannot be changed - 'done' parameter is not defined");
+        return;
+    }
+
+    task.done = req.body.done;
+    res.send(task);
+});
+
+
+
+module.exports = router;
