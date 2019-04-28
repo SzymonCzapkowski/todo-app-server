@@ -6,6 +6,14 @@ const tasks = require('./routes/tasks');
 const express = require('express');
 const app = express();
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, HEAD, OPTIONS");
+  res.header("Access-Control-Allow-Credentials", "true");
+res.header("Access-Control-Allow-Origin", "*");
+res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+next();
+});
+
 const {
   User,
   validateUser
@@ -40,7 +48,7 @@ app.get('/api/tasks', async (req, res) => {
   res.send(task);      
 })
 
-app.delete('/api/tasks/', async (req, res) => { 
+app.delete('/api/tasks', async (req, res) => { 
   console.log(req.query._id)
   await User.deleteOne({_id:req.query._id})
 });
@@ -48,40 +56,8 @@ app.delete('/api/tasks/', async (req, res) => {
 
 // *********category***********
 
-app.delete('/api/tasks/category1', async (req, res) => { 
-  const taskCategory1 = await User.find({category:`${req.query.category}`});
-  res.send(taskCategory1); 
-  app.get('/api/tasks/category1', async (req, res) => {
-  res.send(taskCategory1);      
-  });
-})
-
-app.delete('/api/tasks/category2', async (req, res) => { 
-  const taskCategory2 = await User.find({category:`${req.query.category}`});
-  res.send(taskCategory2); 
-  app.get('/api/tasks/category2', async (req, res) => {
-  res.send(taskCategory2);      
-  });
-})
-
-app.delete('/api/tasks/category3', async (req, res) => { 
-  const taskCategory3 = await User.find({category:`${req.query.category}`});
-  res.send(taskCategory3); 
-  app.get('/api/tasks/category3', async (req, res) => {
-  res.send(taskCategory3);      
-  });
-})
-
-app.delete('/api/tasks/category4', async (req, res) => { 
-  const taskCategory4 = await User.find();
-  res.send(taskCategory4); 
-  app.get('/api/tasks/category4', async (req, res) => {
-  res.send(taskCategory4);      
-  });
-})
-
-// app.get('/api/tasks/category3', async (req, res) => {
-//   const categoryTasks = await User.find({category:`${req.query.category}`});  
-//   console.log(categoryTasks)
-//   // res.send(categoryTasks)
-// }); 
+app.get('/api/tasks/category', async (req, res) => {
+  const categoryTasks = await User.find({category:`${req.query.category}`});  
+  console.log(categoryTasks)
+  res.send(categoryTasks)
+}); 

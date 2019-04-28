@@ -7,14 +7,6 @@ const { User } = require('../models/user');
 app.use(express.json());
 
 
-//get tasks
-
-router.get('/', async(req, res) => {
-    const task = await Task.find();
-    res.send(task);
-});
-
-
 // post task
 router.post('/', async(req, res) => {
     const { error } = validate(req.body);
@@ -71,12 +63,5 @@ router.put('/status/:id', (req, res) => {
     res.send(task);
 });
 
-
-
-
-router.get('/', async(req, res) => {
-    const task = await Task.find();
-    res.send(task);
-})
 
 module.exports = router;
