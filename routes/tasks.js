@@ -47,20 +47,21 @@ router.put('/edit/:id', async(req, res) => {
 });
 
 // mark tasks as done
-router.put('/status/:id', (req, res) => {
-    const task = taskList.find(t => t.id === parseInt(req.params.id));
+router.put('/status/:id', async(req, res) => {
+    const task = await Task.findById(req.params.id);
     if (!task) {
         res.status(404).send('The task with given ID does not exist');
         return;
     }
 
-    if (req.body.hasOwnProperty('done') === false) {
-        res.status(400).send("Task cannot be changed - 'done' parameter is not defined");
+    if (req.body.hasOwnProperty('status') === false) {
+        res.status(400).send("Task cannot be changed - 'status' parameter is not defined");
         return;
     }
 
-    task.done = req.body.done;
-    res.send(task);
+    task.status = req.body.status;
+    const result = await task.save();
+    res.send(result);
 });
 
 
