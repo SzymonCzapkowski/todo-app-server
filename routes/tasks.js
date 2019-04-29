@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const router = express.Router();
-const jwtDecode = require('jwt-decode');
+const jwt_decode = require('jwt-decode');
 const {
     Task,
     validateTask
@@ -12,32 +12,20 @@ app.use(express.json());
 
 
 
-
-
-//get tasks
-
-router.get('/', async(req, res) => {
-    const task = await Task.find();
-    res.send(task);
-});
-
-
-
-
-
 // post task
 router.post('/', async(req, res) => {
+    const userDecoded = jwt_decode(req.query.token);
     const {
         error
     } = validateTask(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     const task = new Task({
-        id: _id,
+        //id: _id,
         name: req.body.name,
-        user: user,
+        User: new mongoose.Types.ObjectId(userDecoded._id),
         category: req.body.category,
-        status: req.body.status
+        status: false
     });
 
     const result = await task.save();
@@ -46,6 +34,7 @@ router.post('/', async(req, res) => {
 
 //edit task
 router.put('/edit/:id', async(req, res) => {
+    const userDecoded = jwt_decode(req.query.token);
 
     const {
         error
@@ -56,9 +45,9 @@ router.put('/edit/:id', async(req, res) => {
     const task = await Task.findByIdAndUpdate(req.params.id, {
         id: _id,
         name: req.body.name,
-        user: user,
+        User: new mongoose.Types.ObjectId(userDecoded._id),
         category: req.body.category,
-        status: req.body.status
+        status: false
     }, {
         new: true
     });
@@ -66,22 +55,6 @@ router.put('/edit/:id', async(req, res) => {
     res.send(task);
 });
 
-// mark tasks as done - Angelika
-router.put('/status/:id', (req, res) => {
-    const task = taskList.find(t => t.id === parseInt(req.params.id));
-    if (!task) {
-        res.status(404).send('The task with given ID does not exist');
-        return;
-    }
-
-    if (req.body.hasOwnProperty('done') === false) {
-        res.status(400).send("Task cannot be changed - 'done' parameter is not defined");
-        return;
-    }
-
-    task.done = req.body.done;
-    res.send(task);
-});
 
 
 
