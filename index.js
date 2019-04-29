@@ -26,7 +26,7 @@ mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 
 app.use(express.json());
-// app.use('/api/tasks', tasks);
+app.use('/api/tasks', tasks);
 // app.use('/api/users', users);
 app.use('/api', auth);
 
