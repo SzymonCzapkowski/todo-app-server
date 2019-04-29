@@ -2,49 +2,61 @@ const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
 const router = express.Router();
-const { Task } = require('../models/task');
-const { User } = require('../models/user');
+
+const jwt_decode = require('jwt-decode');
+const {
+    Task,
+    validateTask
+} = require('../models/task');
+
 
 app.use(express.json());
 
 
+
 // post task
 router.post('/', async(req, res) => {
-    // const { error } = validate(req.body);
-    // if (error) return res.status(400).send(error.details[0].message);
+    const userDecoded = jwt_decode(req.query.token);
+    const {
+        error
+    } = validateTask(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
-    const task = new Task( {
-        // id: _id,
+    const task = new Task({
+        //id: _id,
         name: req.body.name,
-        User: new mongoose.Types.ObjectId("5cc61dd2579fcc41641ef4b9"),
-        // },
+        User: new mongoose.Types.ObjectId(userDecoded._id),
         category: req.body.category,
-        status: false, 
+        status: false
     });
 
-    const result = await task.save()
+    const result = await task.save();
     res.send(result);
 });
 
 //edit task
 router.put('/edit/:id', async(req, res) => {
+    const userDecoded = jwt_decode(req.query.token);
 
-    const { error } = validate(req.body);
+    const {
+        error
+    } = validateTask(req.body);
     if (error) return res.status(400).send(error.details[0].message);
-
 
     const task = await Task.findByIdAndUpdate(req.params.id, {
         id: _id,
         name: req.body.name,
-        user: User._id,
+        User: new mongoose.Types.ObjectId(userDecoded._id),
         category: req.body.category,
-        status: req.body.status
-    }, { new: true });
+        status: false
+    }, {
+        new: true
+    });
 
     res.send(task);
 
-
 });
+
 
 // mark tasks as done
 router.put('/status/:id', (req, res) => {
@@ -53,7 +65,6 @@ router.put('/status/:id', (req, res) => {
         res.status(404).send('The task with given ID does not exist');
         return;
     }
-
     if (req.body.hasOwnProperty('done') === false) {
         res.status(400).send("Task cannot be changed - 'done' parameter is not defined");
         return;
@@ -61,7 +72,11 @@ router.put('/status/:id', (req, res) => {
 
     task.done = req.body.done;
     res.send(task);
+
+
 });
+
+
 
 
 module.exports = router;

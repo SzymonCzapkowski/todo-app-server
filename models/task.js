@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
+const {
+    User
+} = require('./user');
 
 
 const Task = mongoose.model('Task', new mongoose.Schema({
@@ -30,7 +33,7 @@ const Task = mongoose.model('Task', new mongoose.Schema({
 function validateTask(task) {
     const schema = Joi.object().keys({
         name: Joi.string().min(3).max(255).required(),
-        User: Joi.required(),
+        // User: Joi.required(),
         category: Joi.string().valid(['work', 'home', 'personal']).required(),
         status: Joi.boolean().default(false)
     });
