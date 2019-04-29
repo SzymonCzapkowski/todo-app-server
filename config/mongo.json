@@ -1,0 +1,9 @@
+{
+    "development" : {
+        "database": "todo-app",
+        "host": "localhost"
+    },
+    "production":{
+        "use_env_variable": "MONGODB_URI"
+    }
+}

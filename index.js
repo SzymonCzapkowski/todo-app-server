@@ -33,11 +33,26 @@ const {
 // }
 
 
-mongoose.connect('mongodb://localhost/todo-app', {
-    useNewUrlParser: true
-  })
-  .then(() => console.log('Connected to MongoDB...'))
-  .catch(err => console.error('Could not connect to MongoDB...'));
+// mongoose.connect('mongodb://localhost/todo-app', {
+//     useNewUrlParser: true
+//   })
+//   .then(() => console.log('Connected to MongoDB...'))
+//   .catch(err => console.error('Could not connect to MongoDB...'));
+
+app.use((req,res,next) => {
+  console.log('use for mongoose callback');
+  if(mongoose.connection.readyState) {
+    console.log('if (mongoose.connection.readyState)')
+    next();
+  } else {
+    console.log('else');
+    require('./mongo')().then(() => next());
+    console.log('else');
+  }
+})
+
+
+
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 
